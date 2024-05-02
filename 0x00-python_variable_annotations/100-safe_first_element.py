@@ -1,19 +1,18 @@
+
 #!/usr/bin/env python3
-"""
-This module contains the safe_first_element function.
-"""
-
-from typing import Sequence, Any, Union
+""" More involved type annotations  """
+from typing import Mapping, Any, Sequence, Union, TypeVar
 
 
-def safe_first_element(lst: Sequence[Any]) -> Union[Any, None]:
-    """
-    Takes a sequence, lst, and returns the first element if it exists, otherwise None.
+T = TypeVar('T')
 
-    :param lst: Sequence of any type.
-    :return: First element of the sequence or None if the sequence is empty.
-    """
-    if lst:
-        return lst[0]
+
+def safely_get_value(dct: Mapping, key: Any,
+                     default: Union[T, None] = None
+                     ) -> Union[Any, T]:
+    """ Safely get value """
+    if key in dct:
+        return dct[key]
     else:
-        return None
+        return default
+
