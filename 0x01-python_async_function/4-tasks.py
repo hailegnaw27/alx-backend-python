@@ -1,25 +1,46 @@
+#!/usr/bin/env python3
+
 import asyncio
 from typing import List
+from random import uniform
 
-task_wait_random = __import__('3-tasks').task_wait_random
-
-
-async def task_wait_n(n: int, max_delay: int) -> List[float]:
+async def wait_random(max_delay: int) -> float:
     """
-    Executes multiple coroutines at the same time with async
-    using task_wait_random
+    Asynchronous function that waits for a random amount of time up to max_delay.
     """
-    delays = []
-    tasks = []
+    delay = uniform(0, max_delay)
+    await asyncio.sleep(delay)
+    return delay
 
-    for _ in range(n):
-        task = asyncio.create_task(task_wait_random(max_delay))
-        tasks.append(task)
+def task_wait_random(max_delay: int) -> asyncio.Task:
+    """
+    Function that creates an asyncio.Task for wait_random function.
+    """
+    return asyncio.create_task(wait_random(max_delay))
 
-    for task in tasks:
-        delay = await task
-        delays.append(delay)
+async def wait_n(n: int, max_delay: int) -> List[float]:
+    """
+    Asynchronous function that calls wait_random n times.
+    """
+    return [await wait_random(max_delay) for _ in range(n)]
 
-    delays.sort()
+def task_wait_n(n: int, max_delay: int) -> asyncio.Task:
+    """
+    Function that creates an asyncio.Task for wait_n function.
+    """
+    return asyncio.create_task(wait_n(n, max_delay))
 
-    return delays
+# Example usage
+async def test(max_delay: int) -> None:
+    task = task_wait_random(max_delay)
+    await task
+    print(task.__class__)
+
+async def test_wait_n(n: int, max_delay: int) -> None:
+    result = await wait_n(n, max_delay)
+    print(result)
+
+# Running the asyncio event loop
+asyncio.run(test(5))  # Example for task_wait_random
+asyncio.run(test_wait_n(5, 6))  # Example for task_wait_n
+
