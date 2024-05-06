@@ -1,27 +1,22 @@
 #!/usr/bin/env python3
 """
-Module containing the `measure_time` function.
+Module containing the `task_wait_random` function.
 """
 
 import asyncio
-import time
-from typing import Union
-from 1-concurrent_coroutines import wait_n
+from 0-basic_async_syntax import wait_random
 
 
-def measure_time(n: int, max_delay: int) -> float:
+def task_wait_random(max_delay: int) -> asyncio.Task:
     """
-    Measures the total execution time for `wait_n(n, max_delay)`.
+    Returns an asyncio.Task that wraps the `wait_random` coroutine.
 
     Parameters:
-    n (int): Number of times to spawn `wait_random`.
-    max_delay (int): The maximum delay.
+    max_delay (int): The maximum delay for `wait_random`.
 
     Returns:
-    float: Average time per coroutine.
+    asyncio.Task: An asyncio task wrapping the `wait_random` coroutine.
     """
-    start_time = time.time()
-    asyncio.run(wait_n(n, max_delay))
-    total_time = time.time() - start_time
-    return total_time / n
+    # Create an asyncio Task that wraps the wait_random coroutine with max_delay
+    return asyncio.create_task(wait_random(max_delay))
 

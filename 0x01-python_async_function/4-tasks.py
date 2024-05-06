@@ -1,26 +1,25 @@
-#!/usr/bin/env python3
-"""
-Module containing the `task_wait_n` coroutine.
-"""
-
 import asyncio
 from typing import List
-from 3-tasks import task_wait_random
+
+task_wait_random = __import__('3-tasks').task_wait_random
 
 
 async def task_wait_n(n: int, max_delay: int) -> List[float]:
     """
-    Asynchronous routine that spawns `task_wait_random` `n` times
-    with the specified `max_delay` and returns a list of all delays.
-
-    Parameters:
-    n (int): Number of times to spawn `task_wait_random`.
-    max_delay (int): The maximum delay.
-
-    Returns:
-    List[float]: List of all delays in ascending order.
+    Executes multiple coroutines at the same time with async
+    using task_wait_random
     """
-    tasks = [task_wait_random(max_delay) for _ in range(n)]
-    delays = await asyncio.gather(*tasks)
-    return sorted(delays)
+    delays = []
+    tasks = []
 
+    for _ in range(n):
+        task = asyncio.create_task(task_wait_random(max_delay))
+        tasks.append(task)
+
+    for task in tasks:
+        delay = await task
+        delays.append(delay)
+
+    delays.sort()
+
+    return delays
