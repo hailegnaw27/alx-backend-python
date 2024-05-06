@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 """
-Function to measure the runtime.
+Module containing the `wait_n` coroutine.
 """
 
-import time
-from 1-concurrent_coroutines import wait_n
+import asyncio
+from typing import List
+from 0-basic_async_syntax import wait_random
 
 
-def measure_time(n: int, max_delay: int) -> float:
+async def wait_n(n: int, max_delay: int) -> List[float]:
     """
-    Measures the total execution time for wait_n(n, max_delay).
-    Returns the average time per coroutine.
+    Asynchronous routine that spawns `wait_random` `n` times
+    with the specified `max_delay` and returns a list of all delays.
+
+    Parameters:
+    n (int): Number of times to spawn `wait_random`.
+    max_delay (int): The maximum delay.
+
+    Returns:
+    List[float]: List of all delays in ascending order.
     """
-    start_time = time.time()
-    asyncio.run(wait_n(n, max_delay))
-    end_time = time.time()
-    
-    total_time = end_time - start_time
-    average_time = total_time / n
-    return average_time
+    tasks = [wait_random(max_delay) for _ in range(n)]
+    delays = await asyncio.gather(*tasks)
+    return sorted(delays)
 
